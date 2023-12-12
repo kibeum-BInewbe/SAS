@@ -1,0 +1,14 @@
+// data 불러오기
+data travel;
+infile "C:\Users\kibeu\OneDrive\바탕 화면\travel.txt";
+input name gender school iftravel;
+run;
+
+// data 출력해보기
+proc print data = travel; run;
+
+// school을 제어변수로 설정
+proc freq data = travel;
+// chisq 옵션 사용, 독립일 때 기댓값 출력
+tables school*gender*iftravel/ norow nocol nopercent chisq expected;
+run;
