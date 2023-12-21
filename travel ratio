@@ -12,3 +12,18 @@ proc freq data = travel;
 // chisq 옵션 사용, 독립일 때 기댓값 출력
 tables school*gender*iftravel/ norow nocol nopercent chisq expected;
 run;
+
+// 동질적 연관성 검정
+data travel;
+infile "C:\Users\kibeu\OneDrive\바탕 화면\travel.txt";
+input name gender school iftravel;
+run;
+proc freq data = travel order = data;
+tables school*gender*iftravel/cmh; run;
+
+/*
+동질적 연관성과 공통오즈비 추정량 결과해석
+CMH 통계량의 값은 15.94, MH 공통오즈비 추정값은 0.79이며, 유의확률은 0.50이다.
+따라서 귀무가설을 기각하여 성별과 여행경험 여부 간에 조건부 연관성이 존재한다.
+공통오즈비 추정값이 0.79이므로, 성별 간에 여행경험 여부의 오즈는 0.79배이다.
+*/
