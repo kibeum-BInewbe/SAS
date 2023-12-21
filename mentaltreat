@@ -1,0 +1,37 @@
+/* 
+항정신병 약제로 인해 배변이 수월하지 않은 정신분열증 입원환자 총 56명을 세개의 그룹에 랜덤 할당하여 4주간 치료한 결과이다.
+대조군은 수분섭취를 제외하고 변비에 대해 아무런 처방을 받지 않은 군이며,
+치료 1군은 매일 일정한 수분섭취와 15분간의 운동을 처방받았고,
+치료 II군은 I군과 동일한 처방에 덧붙여 식이섬유를 처방받았다.
+단, 대조군은 20명, 치료 I군은 18명, 치료 II군은 18명이 배치되었으며 0은 변비 증상이 없는 환자이고 1은 변비 증상이 있는 환자이다.
+대조군에 비해 다른 두 군, 즉 치료 I군, 치료 II군의 순서로 배변이 수월한가를 검정하시오. 
+*/
+
+// 1. 포화로그선형모형(saturated loglinear model)
+// 대조군: control(c), 치료1군: treat1(t1), 치료2군: treat2(t2)
+data mental;
+input group $ symptom $ count@@;
+cards;
+C Y 17 C N 3
+T1 Y 9 T1 N 9
+T2 Y 3 T2 N 15
+; run;
+proc genmod data = mental order = data;
+class group symptom;
+model count = group symptom group*symptom/dist=poisson link=log obstats;
+run;
+
+
+// 2. 선형확률모형(linear probability model)
+// treatlevel의 범주점수를 대조군: 0, 치료1군: 5, 치료2군: 10으로 설정
+data mental3;
+input treatlevel symptom total @@;
+cards;
+0 17 20
+5 9 18
+10 3 18
+; run;
+proc genmod data = mental3;
+model symptom/total = treatlevel/ dist = bin link = identity;
+run;
+proc print data = mental3; run;
